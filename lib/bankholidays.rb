@@ -19,19 +19,15 @@ module BankHolidays
   
     def self.get_dates
       dates = []
-      year = Date.today.year
-      years = (year..(year + 10)).to_a
 
-      years.each do |y|
-        res = HTTParty.get "https://www.gov.uk/bank-holidays/england-and-wales-#{y}.ics"
-        break if res.code == 404
-        ics = Icalendar.parse( res )
-        cal = ics.first
-        cal.events.each do |e|
-          dates << { :date => e.dtstart, :name => e.summary }
-        end
+      res = HTTParty.get "https://www.gov.uk/bank-holidays/england-and-wales.ics"
+      break if res.code == 404
+      ics = Icalendar.parse( res )
+      cal = ics.first
+      cal.events.each do |e|
+        dates << { :date => e.dtstart, :name => e.summary }
       end
-      
+    
       dates
     end
     
